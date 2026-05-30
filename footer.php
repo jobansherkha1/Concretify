@@ -1,7 +1,10 @@
 <?php
-$phone_raw = rc_mod( 'royal_phone_raw', '4372557770' );
-$phone     = rc_mod( 'royal_phone', '437-255-7770' );
-$cta_name  = rc_mod( 'royal_cta_name', 'SAHIL' );
+$phone_raw       = rc_mod( 'royal_phone_raw',       '4372557770' );
+$phone           = rc_mod( 'royal_phone',           '437-255-7770' );
+$cta_name        = rc_mod( 'royal_cta_name',        'SAHIL' );
+$footer_tagline  = rc_mod( 'royal_footer_tagline',  'CUTTING & CORING INC.' );
+$facebook_url    = rc_mod( 'royal_facebook_url',    '' );
+$linkedin_url    = rc_mod( 'royal_linkedin_url',    '' );
 ?>
 
 <!-- ══════════════════════════════
@@ -13,7 +16,7 @@ $cta_name  = rc_mod( 'royal_cta_name', 'SAHIL' );
     <!-- Brand -->
     <div class="flex flex-col gap-2 items-center md:items-start">
       <span class="font-headline-md text-headline-md text-primary-container uppercase">ROYAL CONCRETE</span>
-      <span class="font-label-md text-label-md text-surface-variant uppercase tracking-widest text-[10px]">CUTTING &amp; CORING INC.</span>
+      <span class="font-label-md text-label-md text-surface-variant uppercase tracking-widest text-[10px]"><?php echo esc_html( $footer_tagline ); ?></span>
     </div>
 
     <!-- Desktop links -->
@@ -24,6 +27,18 @@ $cta_name  = rc_mod( 'royal_cta_name', 'SAHIL' );
         <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary-container hover:underline transition-all" href="#egress">EGRESS INFO</a>
         <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary-container hover:underline transition-all" href="#quote">CONTACT</a>
       </div>
+      <?php if ( $facebook_url || $linkedin_url ) : ?>
+      <div class="flex gap-4 mb-2">
+        <?php if ( $facebook_url ) : ?>
+        <a href="<?php echo esc_url( $facebook_url ); ?>" target="_blank" rel="noopener noreferrer"
+           class="text-on-surface-variant font-label-md text-label-md hover:text-primary-container transition-colors uppercase">Facebook</a>
+        <?php endif; ?>
+        <?php if ( $linkedin_url ) : ?>
+        <a href="<?php echo esc_url( $linkedin_url ); ?>" target="_blank" rel="noopener noreferrer"
+           class="text-on-surface-variant font-label-md text-label-md hover:text-primary-container transition-colors uppercase">LinkedIn</a>
+        <?php endif; ?>
+      </div>
+      <?php endif; ?>
       <div class="font-body-md text-body-md text-surface-variant text-xs">
         &copy; <?php echo date( 'Y' ); ?> ROYAL CONCRETE CUTTING &amp; CORING INC.
       </div>

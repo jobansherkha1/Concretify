@@ -6,12 +6,79 @@
 
 get_header();
 
-$phone_raw   = rc_mod( 'royal_phone_raw',   '4372557770' );
-$phone       = rc_mod( 'royal_phone',       '437-255-7770' );
-$email       = rc_mod( 'royal_email',       'royalconcrete0001@gmail.com' );
-$instagram   = rc_mod( 'royal_instagram',   '@royal_concrete_cutting' );
-$hero_bg     = rc_mod( 'royal_hero_bg',     'https://www.ieltsbid.in/wp-content/uploads/2026/05/construction-worker.jpg' );
-$hero_hl     = rc_mod( 'royal_hero_headline', 'WE <span class="text-primary-container">CUT</span><br><span class="text-outline-white">THROUGH</span><br>ANYTHING' );
+/* ─── Contact ─── */
+$phone_raw = rc_mod( 'royal_phone_raw', '4372557770' );
+$phone     = rc_mod( 'royal_phone',     '437-255-7770' );
+$email     = rc_mod( 'royal_email',     'royalconcrete0001@gmail.com' );
+$instagram = rc_mod( 'royal_instagram', '@royal_concrete_cutting' );
+
+/* ─── Hero ─── */
+$hero_bg      = rc_mod( 'royal_hero_bg',       'https://www.ieltsbid.in/wp-content/uploads/2026/05/construction-worker.jpg' );
+$hero_hl      = rc_mod( 'royal_hero_headline', 'WE <span class="text-primary-container">CUT</span><br><span class="text-outline-white">THROUGH</span><br>ANYTHING' );
+$hero_subcopy = rc_mod( 'royal_hero_subcopy',  'Commercial & Residential concrete specialists serving Toronto & the GTA. Built on precision, powered by diamond blades.' );
+$hero_tagline = rc_mod( 'royal_hero_tagline',  '"If you can dream it, we can build it."' );
+$hero_badges  = [
+    rc_mod( 'royal_hero_badge_1', 'FULLY INSURED' ),
+    rc_mod( 'royal_hero_badge_2', 'COMMERCIAL' ),
+    rc_mod( 'royal_hero_badge_3', 'RESIDENTIAL' ),
+    rc_mod( 'royal_hero_badge_4', 'FAST RESPONSE' ),
+];
+
+/* ─── Stats ─── */
+$stats = [
+    [ rc_mod( 'royal_stat1_value', '500' ), rc_mod( 'royal_stat1_suffix', '+' ), rc_mod( 'royal_stat1_label', 'JOBS DONE' ) ],
+    [ rc_mod( 'royal_stat2_value', '10'  ), rc_mod( 'royal_stat2_suffix', '+' ), rc_mod( 'royal_stat2_label', 'YRS EXP'  ) ],
+    [ rc_mod( 'royal_stat3_value', '100' ), rc_mod( 'royal_stat3_suffix', '%' ), rc_mod( 'royal_stat3_label', 'SAFETY'   ) ],
+];
+
+/* ─── About ─── */
+$about_headline = rc_mod( 'royal_about_headline', 'BUILT ON STRENGTH.<br>DRIVEN BY PRECISION.' );
+$about_para1    = rc_mod( 'royal_about_para1',    'Royal Concrete Cutting & Coring Inc. tackles the heavy, structural concrete work that other contractors walk away from. We specialize in precision wall cutting, legal basement entrances, and full egress window systems.' );
+$about_para2    = rc_mod( 'royal_about_para2',    'Founded by <strong class="text-white">Sahil</strong>, we bring industrial-grade equipment and an uncompromising work ethic to every job—whether it\'s a massive commercial core drilling project or a residential basement upgrade in the GTA.' );
+$about_video    = rc_mod( 'royal_about_video_url','https://www.ieltsbid.in/wp-content/uploads/2026/05/motion_2.0-fast_Ultra_realistic_cinematic_construction_video_in_Canada_showing_professional_inst-0.mp4' );
+$about_cta      = rc_mod( 'royal_about_cta_text', 'CONTACT SAHIL DIRECTLY' );
+
+/* ─── Services ─── */
+$service_defaults = [
+    [ 'EGRESS WINDOWS',           'Code-compliant emergency exit windows. We handle the digging, concrete cutting, well installation, and final fitting.',   false ],
+    [ 'LEGAL BASEMENT ENTRANCES', 'Unlock rental income potential. Complete structural side-entrance cutting and permit-ready installations.',               true  ],
+    [ 'WINDOW ENLARGEMENT',       'Resize existing concrete window bucks for modern, larger windows. Clean diamond cuts with zero structural compromise.',   false ],
+    [ 'SIDE DOOR CUTTING',        'Adding new access points. Professional concrete cutting, framing prep, and waterproofing to code.',                       false ],
+    [ 'WALL CUTTING',             'Precision structural and non-structural wall cuts for renovations, utility pass-throughs, and custom openings.',          true  ],
+    [ 'ALL CONCRETE WORK',        "Core drilling, slab cutting, trenching, and demolition prep. If it's concrete, our blades will cut it.",                  false ],
+];
+$services = [];
+foreach ( $service_defaults as $i => $svc ) {
+    $n = $i + 1;
+    $services[] = [
+        str_pad( $n, 2, '0', STR_PAD_LEFT ),
+        rc_mod( "royal_service{$n}_title", $svc[0] ),
+        rc_mod( "royal_service{$n}_desc",  $svc[1] ),
+        $svc[2],
+    ];
+}
+
+/* ─── Egress ─── */
+$egress_facts = [
+    [ 'timer',                 'on-surface-variant', rc_mod( 'royal_egress_fact1', 'It takes <span class="text-primary-container font-bold">less than 1 minute</span> for a Christmas tree to set an entire room on fire.' ) ],
+    [ 'local_fire_department', 'on-surface-variant', rc_mod( 'royal_egress_fact2', 'From 2016-2018, an average of <span class="text-primary-container font-bold">160 house fires</span> started from Christmas trees each year.' ) ],
+    [ 'warning',               'primary-container',  rc_mod( 'royal_egress_fact3', 'These fires caused an average of <span class="text-primary-container font-bold">2 deaths, 14 injuries, and $10M</span> in direct property damage per year.' ) ],
+    [ 'sensor_door',           'primary-container',  rc_mod( 'royal_egress_fact4', 'Having an Egress Window System gives your family <span class="text-primary-container font-bold">another emergency exit</span> when seconds count.' ) ],
+];
+$egress_benefits = [
+    rc_mod( 'royal_egress_benefit1', 'GREAT FOR NATURAL LIGHT' ),
+    rc_mod( 'royal_egress_benefit2', 'CREATES MORE VENTILATION' ),
+    rc_mod( 'royal_egress_benefit3', 'INCREASES TOTAL HOME VALUE' ),
+    rc_mod( 'royal_egress_benefit4', 'ACCESS FOR FIRST RESPONDERS' ),
+    rc_mod( 'royal_egress_benefit5', 'REQUIRED FOR LEGAL BEDROOMS' ),
+];
+
+/* ─── Quote / Contact ─── */
+$quote_headline = rc_mod( 'royal_quote_headline', 'READY TO<br>BREAK GROUND?' );
+$quote_intro    = rc_mod( 'royal_quote_intro',    'Reach out to Sahil today. We provide fast, free, no-nonsense estimates for all commercial and residential jobs.' );
+
+/* ─── Accent color (for inline styles) ─── */
+$accent = sanitize_hex_color( get_theme_mod( 'royal_accent_color', '#FFB800' ) ) ?: '#FFB800';
 ?>
 
 <!-- ══════════════════════════════
@@ -44,10 +111,10 @@ $hero_hl     = rc_mod( 'royal_hero_headline', 'WE <span class="text-primary-cont
 
       <!-- Sub-copy -->
       <p class="font-body-lg text-body-lg text-on-surface-variant mb-4 max-w-lg">
-        Commercial &amp; Residential concrete specialists serving Toronto &amp; the GTA. Built on precision, powered by diamond blades.
+        <?php echo esc_html( $hero_subcopy ); ?>
       </p>
       <p class="font-body-lg text-body-lg text-primary-container font-bold mb-10 max-w-lg">
-        "If you can dream it, we can build it."
+        <?php echo esc_html( $hero_tagline ); ?>
       </p>
 
       <!-- CTAs -->
@@ -60,9 +127,7 @@ $hero_hl     = rc_mod( 'royal_hero_headline', 'WE <span class="text-primary-cont
 
       <!-- Trust badges -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-surface-variant pt-8">
-        <?php
-        $badges = [ 'FULLY INSURED', 'COMMERCIAL', 'RESIDENTIAL', 'FAST RESPONSE' ];
-        foreach ( $badges as $badge ) : ?>
+        <?php foreach ( $hero_badges as $badge ) : ?>
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-primary-container text-sm">check_box</span>
           <span class="font-label-md text-label-md text-on-surface text-xs uppercase"><?php echo esc_html( $badge ); ?></span>
@@ -83,18 +148,20 @@ $hero_hl     = rc_mod( 'royal_hero_headline', 'WE <span class="text-primary-cont
 <section id="stats-section" class="bg-primary-container text-black py-8 border-b-8 border-black">
   <div class="max-w-[1280px] mx-auto px-4 md:px-16">
     <div class="grid grid-cols-3 gap-0 divide-x-4 divide-black">
-      <div class="px-4 md:pl-0 flex flex-col items-start justify-center">
-        <span class="font-stat-lg text-stat-lg leading-none stat-number" data-value="500" data-suffix="+">0+</span>
-        <span class="font-label-md text-label-md uppercase font-bold tracking-widest mt-2 stat-label">JOBS DONE</span>
+      <?php foreach ( $stats as $i => $stat ) :
+        $class = ( $i === 0 ) ? 'px-4 md:pl-0' : 'px-4 md:px-8';
+      ?>
+      <div class="<?php echo esc_attr( $class ); ?> flex flex-col items-start justify-center">
+        <span class="font-stat-lg text-stat-lg leading-none stat-number"
+              data-value="<?php echo esc_attr( $stat[0] ); ?>"
+              data-suffix="<?php echo esc_attr( $stat[1] ); ?>">
+          0<?php echo esc_html( $stat[1] ); ?>
+        </span>
+        <span class="font-label-md text-label-md uppercase font-bold tracking-widest mt-2 stat-label">
+          <?php echo esc_html( $stat[2] ); ?>
+        </span>
       </div>
-      <div class="px-4 md:px-8 flex flex-col items-start justify-center">
-        <span class="font-stat-lg text-stat-lg leading-none stat-number" data-value="10" data-suffix="+">0+</span>
-        <span class="font-label-md text-label-md uppercase font-bold tracking-widest mt-2 stat-label">YRS EXP</span>
-      </div>
-      <div class="px-4 md:px-8 flex flex-col items-start justify-center">
-        <span class="font-stat-lg text-stat-lg leading-none stat-number" data-value="100" data-suffix="%">0%</span>
-        <span class="font-label-md text-label-md uppercase font-bold tracking-widest mt-2 stat-label">SAFETY</span>
-      </div>
+      <?php endforeach; ?>
     </div>
   </div>
 </section>
@@ -110,22 +177,22 @@ $hero_hl     = rc_mod( 'royal_hero_headline', 'WE <span class="text-primary-cont
         <span class="font-label-md text-label-md uppercase tracking-widest text-primary-container">THE COMPANY</span>
       </div>
       <h2 class="font-headline-lg text-headline-lg uppercase mb-8 leading-[1.05] text-white">
-        BUILT ON STRENGTH.<br>DRIVEN BY PRECISION.
+        <?php echo wp_kses_post( $about_headline ); ?>
       </h2>
       <div class="font-body-lg text-body-lg space-y-6 mb-10 max-w-lg text-white">
-        <p>Royal Concrete Cutting &amp; Coring Inc. tackles the heavy, structural concrete work that other contractors walk away from. We specialize in precision wall cutting, legal basement entrances, and full egress window systems.</p>
-        <p>Founded by <strong class="text-white">Sahil</strong>, we bring industrial-grade equipment and an uncompromising work ethic to every job—whether it's a massive commercial core drilling project or a residential basement upgrade in the GTA.</p>
+        <p><?php echo esc_html( $about_para1 ); ?></p>
+        <p><?php echo wp_kses_post( $about_para2 ); ?></p>
       </div>
       <a class="inline-block font-headline-md text-headline-md px-8 py-3 uppercase shadow-[4px_4px_0px_0px_rgba(13,14,15,0.5)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all border-2 border-transparent bg-primary-container text-black"
-         href="#quote">CONTACT SAHIL DIRECTLY</a>
+         href="#quote"><?php echo esc_html( $about_cta ); ?></a>
     </div>
 
-    <!-- About media / video -->
+    <!-- About video -->
     <div id="about-media" class="relative">
       <div class="absolute -inset-4 border-[#0d0e0f] translate-x-4 translate-y-4 z-0 hidden md:block"></div>
       <div class="bg-[#0d0e0f] w-full h-full relative z-10 border-2 border-[#0d0e0f] flex items-center justify-center overflow-hidden shadow-[8px_8px_0px_0px_#1A1A1A]">
         <video class="w-full h-full object-cover" autoplay muted loop playsinline>
-          <source src="https://www.ieltsbid.in/wp-content/uploads/2026/05/motion_2.0-fast_Ultra_realistic_cinematic_construction_video_in_Canada_showing_professional_inst-0.mp4" type="video/mp4">
+          <source src="<?php echo esc_url( $about_video ); ?>" type="video/mp4">
         </video>
         <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary-container pointer-events-none"></div>
         <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary-container pointer-events-none"></div>
@@ -139,7 +206,7 @@ $hero_hl     = rc_mod( 'royal_hero_headline', 'WE <span class="text-primary-cont
 <!-- ══════════════════════════════
      SERVICES
 ══════════════════════════════ -->
-<section class="py-24 md:py-32" id="services" style="background-color:#FFB800;">
+<section class="py-24 md:py-32" id="services" style="background-color:<?php echo esc_attr( $accent ); ?>;">
   <div class="max-w-[1280px] mx-auto px-4 md:px-16 mb-10 md:mb-16">
     <div class="flex items-center gap-2 mb-4">
       <div class="w-8 h-[2px] bg-black"></div>
@@ -148,16 +215,6 @@ $hero_hl     = rc_mod( 'royal_hero_headline', 'WE <span class="text-primary-cont
     <h2 class="font-headline-lg text-headline-lg uppercase text-black">OUR SERVICES</h2>
   </div>
 
-  <?php
-  $services = [
-    [ '01', 'EGRESS WINDOWS',           'Code-compliant emergency exit windows. We handle the digging, concrete cutting, well installation, and final fitting.',                         false ],
-    [ '02', 'LEGAL BASEMENT ENTRANCES', 'Unlock rental income potential. Complete structural side-entrance cutting and permit-ready installations.',                                     true  ],
-    [ '03', 'WINDOW ENLARGEMENT',       'Resize existing concrete window bucks for modern, larger windows. Clean diamond cuts with zero structural compromise.',                          false ],
-    [ '04', 'SIDE DOOR CUTTING',        'Adding new access points. Professional concrete cutting, framing prep, and waterproofing to code.',                                             false ],
-    [ '05', 'WALL CUTTING',             'Precision structural and non-structural wall cuts for renovations, utility pass-throughs, and custom openings.',                                true  ],
-    [ '06', 'ALL CONCRETE WORK',        "Core drilling, slab cutting, trenching, and demolition prep. If it's concrete, our blades will cut it.",                                       false ],
-  ];
-  ?>
   <div class="max-w-[1280px] mx-auto px-4 md:px-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <?php foreach ( $services as $svc ) :
       $dark  = $svc[3];
@@ -192,14 +249,7 @@ $hero_hl     = rc_mod( 'royal_hero_headline', 'WE <span class="text-primary-cont
     <p class="font-body-lg text-body-lg text-on-surface-variant mb-10">What is Egress and how could it protect you? During the holidays, the risk of fire spikes. Here are the facts:</p>
 
     <div class="space-y-4">
-      <?php
-      $facts = [
-        [ 'timer',                 'on-surface-variant', 'It takes <span class="text-primary-container font-bold">less than 1 minute</span> for a Christmas tree to set an entire room on fire.' ],
-        [ 'local_fire_department', 'on-surface-variant', 'From 2016-2018, an average of <span class="text-primary-container font-bold">160 house fires</span> started from Christmas trees each year.' ],
-        [ 'warning',               'primary-container',  'These fires caused an average of <span class="text-primary-container font-bold">2 deaths, 14 injuries, and $10M</span> in direct property damage per year.' ],
-        [ 'sensor_door',           'primary-container',  'Having an Egress Window System gives your family <span class="text-primary-container font-bold">another emergency exit</span> when seconds count.' ],
-      ];
-      foreach ( $facts as $i => $fact ) :
+      <?php foreach ( $egress_facts as $i => $fact ) :
         $border = ( $i === 3 ) ? 'bg-[#1A1A1A] border-2 border-primary-container' : 'bg-[#1A1A1A] border border-[#333333]';
       ?>
       <div class="<?php echo esc_attr( $border ); ?> p-4 flex items-start gap-4">
@@ -220,21 +270,13 @@ $hero_hl     = rc_mod( 'royal_hero_headline', 'WE <span class="text-primary-cont
     <p class="font-body-lg text-body-lg text-on-surface-variant mb-10">An egress window doesn't just protect your family—it completely transforms a dark, dingy basement into a legal, livable space.</p>
 
     <ul class="space-y-6 mb-12">
-      <?php
-      $benefits = [
-        'GREAT FOR NATURAL LIGHT',
-        'CREATES MORE VENTILATION',
-        'INCREASES TOTAL HOME VALUE',
-        'ACCESS FOR FIRST RESPONDERS',
-        'REQUIRED FOR LEGAL BEDROOMS',
-      ];
-      foreach ( $benefits as $i => $b ) :
+      <?php foreach ( $egress_benefits as $i => $benefit ) :
+        $last = ( $i === count( $egress_benefits ) - 1 );
         $num  = str_pad( $i + 1, 2, '0', STR_PAD_LEFT );
-        $last = ( $i === count( $benefits ) - 1 );
       ?>
       <li class="flex items-center gap-4 <?php echo $last ? '' : 'border-b border-[#333333]'; ?> pb-4">
         <span class="font-headline-md text-headline-md text-primary-container"><?php echo esc_html( $num ); ?></span>
-        <span class="font-headline-md text-[20px] uppercase text-on-surface"><?php echo esc_html( $b ); ?></span>
+        <span class="font-headline-md text-[20px] uppercase text-on-surface"><?php echo esc_html( $benefit ); ?></span>
       </li>
       <?php endforeach; ?>
     </ul>
@@ -257,8 +299,12 @@ $hero_hl     = rc_mod( 'royal_hero_headline', 'WE <span class="text-primary-cont
         <div class="w-8 h-[2px] bg-primary-container"></div>
         <span class="font-label-md text-label-md text-primary-container uppercase tracking-widest">DISPATCH</span>
       </div>
-      <h2 class="font-headline-lg text-headline-lg uppercase mb-6 leading-tight">READY TO<br>BREAK GROUND?</h2>
-      <p class="font-body-lg text-body-lg text-on-surface-variant mb-12 max-w-md">Reach out to Sahil today. We provide fast, free, no-nonsense estimates for all commercial and residential jobs.</p>
+      <h2 class="font-headline-lg text-headline-lg uppercase mb-6 leading-tight">
+        <?php echo wp_kses_post( $quote_headline ); ?>
+      </h2>
+      <p class="font-body-lg text-body-lg text-on-surface-variant mb-12 max-w-md">
+        <?php echo esc_html( $quote_intro ); ?>
+      </p>
 
       <div class="space-y-8">
         <div class="flex items-start gap-4">

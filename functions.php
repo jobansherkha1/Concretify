@@ -47,7 +47,6 @@ if ( ! isset( $content_width ) ) {
 ───────────────────────────────────────────── */
 function royal_concrete_scripts() {
 
-    // Google Fonts
     wp_enqueue_style(
         'royal-concrete-fonts',
         'https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap',
@@ -55,7 +54,6 @@ function royal_concrete_scripts() {
         null
     );
 
-    // Google Material Symbols
     wp_enqueue_style(
         'royal-concrete-material',
         'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap',
@@ -63,10 +61,8 @@ function royal_concrete_scripts() {
         null
     );
 
-    // Theme stylesheet (style.css — keeps WP happy)
     wp_enqueue_style( 'royal-concrete-style', get_stylesheet_uri(), [], '1.0.0' );
 
-    // Theme custom CSS
     wp_enqueue_style(
         'royal-concrete-main',
         get_template_directory_uri() . '/assets/css/main.css',
@@ -80,30 +76,14 @@ function royal_concrete_scripts() {
         'https://cdn.tailwindcss.com?plugins=forms,container-queries',
         [],
         null,
-        false  // Must load in <head> so config script runs before body
+        false
     );
 
-    // Inline Tailwind config — output right after the Tailwind script tag
-    $tailwind_config = royal_concrete_tailwind_config();
-    wp_add_inline_script( 'tailwindcss', $tailwind_config );
+    wp_add_inline_script( 'tailwindcss', royal_concrete_tailwind_config() );
 
-    // GSAP
-    wp_enqueue_script(
-        'gsap',
-        'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js',
-        [],
-        '3.12.7',
-        true
-    );
-    wp_enqueue_script(
-        'gsap-scroll-trigger',
-        'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js',
-        [ 'gsap' ],
-        '3.12.7',
-        true
-    );
+    wp_enqueue_script( 'gsap', 'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js', [], '3.12.7', true );
+    wp_enqueue_script( 'gsap-scroll-trigger', 'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js', [ 'gsap' ], '3.12.7', true );
 
-    // Theme JS
     wp_enqueue_script(
         'royal-concrete-main',
         get_template_directory_uri() . '/assets/js/main.js',
@@ -112,7 +92,6 @@ function royal_concrete_scripts() {
         true
     );
 
-    // Comment reply script
     if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
         wp_enqueue_script( 'comment-reply' );
     }
@@ -120,10 +99,15 @@ function royal_concrete_scripts() {
 add_action( 'wp_enqueue_scripts', 'royal_concrete_scripts' );
 
 /* ─────────────────────────────────────────────
-   4. TAILWIND CONFIG (returned as JS string)
+   4. TAILWIND CONFIG (dynamic accent color)
 ───────────────────────────────────────────── */
 function royal_concrete_tailwind_config() {
-    return <<<'JS'
+    $accent = sanitize_hex_color( get_theme_mod( 'royal_accent_color', '#FFB800' ) );
+    if ( ! $accent ) {
+        $accent = '#FFB800';
+    }
+
+    $js = <<<'JS'
 tailwind.config = {
   darkMode: "class",
   theme: {
@@ -207,27 +191,20 @@ tailwind.config = {
   }
 };
 JS;
+
+    // Replace the default accent color with the Customizer value
+    return str_replace( '"#FFB800"', '"' . $accent . '"', $js );
 }
 
 /* ─────────────────────────────────────────────
-   5. ADD dark CLASS TO <html>
-───────────────────────────────────────────── */
-function royal_concrete_add_dark_class( $classes ) {
-    $classes[] = 'dark';
-    return $classes;
-}
-// Tailwind darkMode:"class" requires class="dark" on <html>
-// We handle this directly in header.php via get_language_attributes() override.
-
-/* ─────────────────────────────────────────────
-   6. CUSTOM IMAGE SIZES
+   5. CUSTOM IMAGE SIZES
 ───────────────────────────────────────────── */
 add_image_size( 'royal-hero',    1920, 1080, true );
 add_image_size( 'royal-service',  800,  600, true );
 add_image_size( 'royal-thumb',    400,  300, true );
 
 /* ─────────────────────────────────────────────
-   7. REGISTER WIDGET AREAS
+   6. REGISTER WIDGET AREAS
 ───────────────────────────────────────────── */
 function royal_concrete_widgets_init() {
     register_sidebar( [
@@ -243,7 +220,7 @@ function royal_concrete_widgets_init() {
 add_action( 'widgets_init', 'royal_concrete_widgets_init' );
 
 /* ─────────────────────────────────────────────
-   8. CUSTOM WALKER — flat nav
+   7. CUSTOM WALKERS — flat nav
 ───────────────────────────────────────────── */
 class Royal_Concrete_Walker extends Walker_Nav_Menu {
     function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
@@ -268,40 +245,54 @@ class Royal_Concrete_Mobile_Walker extends Walker_Nav_Menu {
 }
 
 /* ─────────────────────────────────────────────
-   9. THEME CUSTOMIZER
+   8. THEME CUSTOMIZER
 ───────────────────────────────────────────── */
 function royal_concrete_customize_register( $wp_customize ) {
 
-    /* ── Contact details panel ── */
+    /* ══ Brand Colors ══ */
+    $wp_customize->add_section( 'royal_brand_section', [
+        'title'    => __( 'Brand Colors', 'royal-concrete' ),
+        'priority' => 20,
+    ] );
+    $wp_customize->add_setting( 'royal_accent_color', [
+        'default'           => '#FFB800',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ] );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'royal_accent_color', [
+        'label'   => __( 'Accent Color', 'royal-concrete' ),
+        'section' => 'royal_brand_section',
+    ] ) );
+
+    /* ══ Contact Details ══ */
     $wp_customize->add_panel( 'royal_contact_panel', [
         'title'    => __( 'Contact Details', 'royal-concrete' ),
         'priority' => 30,
     ] );
-
-    $fields = [
-        'royal_phone'     => [ 'Phone Number',    '437-255-7770',                  'Contact Details' ],
-        'royal_phone_raw' => [ 'Phone (href)',     '4372557770',                    'Contact Details' ],
-        'royal_email'     => [ 'Email Address',   'royalconcrete0001@gmail.com',   'Contact Details' ],
-        'royal_instagram' => [ 'Instagram Handle','@royal_concrete_cutting',        'Contact Details' ],
-        'royal_cta_name'  => [ 'CTA Name (e.g. SAHIL)', 'SAHIL',                  'Contact Details' ],
-    ];
-
-    foreach ( $fields as $id => $data ) {
-        $wp_customize->add_setting( $id, [ 'default' => $data[1], 'sanitize_callback' => 'sanitize_text_field' ] );
-        $wp_customize->add_control( $id, [
-            'label'   => __( $data[0], 'royal-concrete' ),
-            'section' => 'royal_contact_section',
-            'type'    => 'text',
-        ] );
-    }
-
     $wp_customize->add_section( 'royal_contact_section', [
         'title'    => __( 'Contact Details', 'royal-concrete' ),
         'panel'    => 'royal_contact_panel',
         'priority' => 10,
     ] );
+    $contact_fields = [
+        'royal_phone'     => [ 'Phone Number (display)',     '437-255-7770',               'text' ],
+        'royal_phone_raw' => [ 'Phone (digits only, for href)', '4372557770',              'text' ],
+        'royal_email'     => [ 'Email Address',              'royalconcrete0001@gmail.com', 'text' ],
+        'royal_instagram' => [ 'Instagram Handle',           '@royal_concrete_cutting',     'text' ],
+        'royal_cta_name'  => [ 'CTA / Founder Name',         'SAHIL',                       'text' ],
+        'royal_facebook_url' => [ 'Facebook URL',            '',                            'url'  ],
+        'royal_linkedin_url' => [ 'LinkedIn URL',            '',                            'url'  ],
+    ];
+    foreach ( $contact_fields as $id => $data ) {
+        $san = ( $data[2] === 'url' ) ? 'esc_url_raw' : 'sanitize_text_field';
+        $wp_customize->add_setting( $id, [ 'default' => $data[1], 'sanitize_callback' => $san ] );
+        $wp_customize->add_control( $id, [
+            'label'   => __( $data[0], 'royal-concrete' ),
+            'section' => 'royal_contact_section',
+            'type'    => $data[2],
+        ] );
+    }
 
-    /* ── Hero panel ── */
+    /* ══ Hero Section ══ */
     $wp_customize->add_section( 'royal_hero_section', [
         'title'    => __( 'Hero Section', 'royal-concrete' ),
         'priority' => 40,
@@ -314,27 +305,201 @@ function royal_concrete_customize_register( $wp_customize ) {
         'label'   => __( 'Hero Background Image', 'royal-concrete' ),
         'section' => 'royal_hero_section',
     ] ) );
-
     $wp_customize->add_setting( 'royal_hero_headline', [
         'default'           => 'WE <span class="text-primary-container">CUT</span><br><span class="text-outline-white">THROUGH</span><br>ANYTHING',
         'sanitize_callback' => 'wp_kses_post',
     ] );
     $wp_customize->add_control( 'royal_hero_headline', [
-        'label'   => __( 'Hero Headline (HTML allowed)', 'royal-concrete' ),
+        'label'   => __( 'Headline (HTML allowed)', 'royal-concrete' ),
         'section' => 'royal_hero_section',
         'type'    => 'textarea',
+    ] );
+    $wp_customize->add_setting( 'royal_hero_subcopy', [
+        'default'           => 'Commercial & Residential concrete specialists serving Toronto & the GTA. Built on precision, powered by diamond blades.',
+        'sanitize_callback' => 'sanitize_text_field',
+    ] );
+    $wp_customize->add_control( 'royal_hero_subcopy', [
+        'label'   => __( 'Sub-copy', 'royal-concrete' ),
+        'section' => 'royal_hero_section',
+        'type'    => 'textarea',
+    ] );
+    $wp_customize->add_setting( 'royal_hero_tagline', [
+        'default'           => '"If you can dream it, we can build it."',
+        'sanitize_callback' => 'sanitize_text_field',
+    ] );
+    $wp_customize->add_control( 'royal_hero_tagline', [
+        'label'   => __( 'Tagline / Quote', 'royal-concrete' ),
+        'section' => 'royal_hero_section',
+        'type'    => 'text',
+    ] );
+    $badge_defaults = [ 1 => 'FULLY INSURED', 2 => 'COMMERCIAL', 3 => 'RESIDENTIAL', 4 => 'FAST RESPONSE' ];
+    foreach ( $badge_defaults as $i => $default ) {
+        $wp_customize->add_setting( "royal_hero_badge_{$i}", [ 'default' => $default, 'sanitize_callback' => 'sanitize_text_field' ] );
+        $wp_customize->add_control( "royal_hero_badge_{$i}", [
+            'label'   => sprintf( __( 'Trust Badge %d', 'royal-concrete' ), $i ),
+            'section' => 'royal_hero_section',
+            'type'    => 'text',
+        ] );
+    }
+
+    /* ══ Stats Bar ══ */
+    $wp_customize->add_section( 'royal_stats_section', [
+        'title'    => __( 'Stats Bar', 'royal-concrete' ),
+        'priority' => 50,
+    ] );
+    $stats_defaults = [
+        1 => [ '500', '+', 'JOBS DONE' ],
+        2 => [ '10',  '+', 'YRS EXP'  ],
+        3 => [ '100', '%', 'SAFETY'   ],
+    ];
+    foreach ( $stats_defaults as $i => $s ) {
+        foreach ( [
+            [ 'value',  $s[0], 'Number'           ],
+            [ 'suffix', $s[1], 'Suffix (+, %, …)' ],
+            [ 'label',  $s[2], 'Label'             ],
+        ] as $f ) {
+            $wp_customize->add_setting( "royal_stat{$i}_{$f[0]}", [ 'default' => $f[1], 'sanitize_callback' => 'sanitize_text_field' ] );
+            $wp_customize->add_control( "royal_stat{$i}_{$f[0]}", [
+                'label'   => sprintf( __( 'Stat %d — %s', 'royal-concrete' ), $i, $f[2] ),
+                'section' => 'royal_stats_section',
+                'type'    => 'text',
+            ] );
+        }
+    }
+
+    /* ══ About Section ══ */
+    $wp_customize->add_section( 'royal_about_section', [
+        'title'    => __( 'About Section', 'royal-concrete' ),
+        'priority' => 60,
+    ] );
+    $about_fields = [
+        'royal_about_headline'  => [ 'Headline (HTML allowed)',  'BUILT ON STRENGTH.<br>DRIVEN BY PRECISION.',                                                                                                                                                                'textarea', 'wp_kses_post'          ],
+        'royal_about_para1'     => [ 'Paragraph 1',              'Royal Concrete Cutting & Coring Inc. tackles the heavy, structural concrete work that other contractors walk away from. We specialize in precision wall cutting, legal basement entrances, and full egress window systems.', 'textarea', 'sanitize_text_field' ],
+        'royal_about_para2'     => [ 'Paragraph 2 (HTML allowed)', 'Founded by <strong class="text-white">Sahil</strong>, we bring industrial-grade equipment and an uncompromising work ethic to every job—whether it\'s a massive commercial core drilling project or a residential basement upgrade in the GTA.', 'textarea', 'wp_kses_post' ],
+        'royal_about_video_url' => [ 'About Video URL (.mp4)',   'https://www.ieltsbid.in/wp-content/uploads/2026/05/motion_2.0-fast_Ultra_realistic_cinematic_construction_video_in_Canada_showing_professional_inst-0.mp4', 'url', 'esc_url_raw' ],
+        'royal_about_cta_text'  => [ 'CTA Button Text',          'CONTACT SAHIL DIRECTLY',                                                                                                                                                                                    'text',     'sanitize_text_field' ],
+    ];
+    foreach ( $about_fields as $id => $f ) {
+        $wp_customize->add_setting( $id, [ 'default' => $f[1], 'sanitize_callback' => $f[3] ] );
+        $wp_customize->add_control( $id, [
+            'label'   => __( $f[0], 'royal-concrete' ),
+            'section' => 'royal_about_section',
+            'type'    => $f[2],
+        ] );
+    }
+
+    /* ══ Services ══ */
+    $wp_customize->add_section( 'royal_services_section', [
+        'title'    => __( 'Services', 'royal-concrete' ),
+        'priority' => 70,
+    ] );
+    $service_defaults = [
+        1 => [ 'EGRESS WINDOWS',           'Code-compliant emergency exit windows. We handle the digging, concrete cutting, well installation, and final fitting.' ],
+        2 => [ 'LEGAL BASEMENT ENTRANCES', 'Unlock rental income potential. Complete structural side-entrance cutting and permit-ready installations.' ],
+        3 => [ 'WINDOW ENLARGEMENT',       'Resize existing concrete window bucks for modern, larger windows. Clean diamond cuts with zero structural compromise.' ],
+        4 => [ 'SIDE DOOR CUTTING',        'Adding new access points. Professional concrete cutting, framing prep, and waterproofing to code.' ],
+        5 => [ 'WALL CUTTING',             'Precision structural and non-structural wall cuts for renovations, utility pass-throughs, and custom openings.' ],
+        6 => [ 'ALL CONCRETE WORK',        "Core drilling, slab cutting, trenching, and demolition prep. If it's concrete, our blades will cut it." ],
+    ];
+    foreach ( $service_defaults as $i => $svc ) {
+        $wp_customize->add_setting( "royal_service{$i}_title", [ 'default' => $svc[0], 'sanitize_callback' => 'sanitize_text_field' ] );
+        $wp_customize->add_control( "royal_service{$i}_title", [
+            'label'   => sprintf( __( 'Service %d — Title', 'royal-concrete' ), $i ),
+            'section' => 'royal_services_section',
+            'type'    => 'text',
+        ] );
+        $wp_customize->add_setting( "royal_service{$i}_desc", [ 'default' => $svc[1], 'sanitize_callback' => 'sanitize_text_field' ] );
+        $wp_customize->add_control( "royal_service{$i}_desc", [
+            'label'   => sprintf( __( 'Service %d — Description', 'royal-concrete' ), $i ),
+            'section' => 'royal_services_section',
+            'type'    => 'textarea',
+        ] );
+    }
+
+    /* ══ Egress Section ══ */
+    $wp_customize->add_section( 'royal_egress_section', [
+        'title'    => __( 'Egress Section', 'royal-concrete' ),
+        'priority' => 80,
+    ] );
+    $fact_defaults = [
+        1 => 'It takes <span class="text-primary-container font-bold">less than 1 minute</span> for a Christmas tree to set an entire room on fire.',
+        2 => 'From 2016-2018, an average of <span class="text-primary-container font-bold">160 house fires</span> started from Christmas trees each year.',
+        3 => 'These fires caused an average of <span class="text-primary-container font-bold">2 deaths, 14 injuries, and $10M</span> in direct property damage per year.',
+        4 => 'Having an Egress Window System gives your family <span class="text-primary-container font-bold">another emergency exit</span> when seconds count.',
+    ];
+    foreach ( $fact_defaults as $i => $default ) {
+        $wp_customize->add_setting( "royal_egress_fact{$i}", [ 'default' => $default, 'sanitize_callback' => 'wp_kses_post' ] );
+        $wp_customize->add_control( "royal_egress_fact{$i}", [
+            'label'   => sprintf( __( 'Safety Fact %d (HTML allowed)', 'royal-concrete' ), $i ),
+            'section' => 'royal_egress_section',
+            'type'    => 'textarea',
+        ] );
+    }
+    $benefit_defaults = [
+        1 => 'GREAT FOR NATURAL LIGHT',
+        2 => 'CREATES MORE VENTILATION',
+        3 => 'INCREASES TOTAL HOME VALUE',
+        4 => 'ACCESS FOR FIRST RESPONDERS',
+        5 => 'REQUIRED FOR LEGAL BEDROOMS',
+    ];
+    foreach ( $benefit_defaults as $i => $default ) {
+        $wp_customize->add_setting( "royal_egress_benefit{$i}", [ 'default' => $default, 'sanitize_callback' => 'sanitize_text_field' ] );
+        $wp_customize->add_control( "royal_egress_benefit{$i}", [
+            'label'   => sprintf( __( 'Egress Benefit %d', 'royal-concrete' ), $i ),
+            'section' => 'royal_egress_section',
+            'type'    => 'text',
+        ] );
+    }
+
+    /* ══ Quote / Contact Section ══ */
+    $wp_customize->add_section( 'royal_quote_section', [
+        'title'    => __( 'Quote / Contact Section', 'royal-concrete' ),
+        'priority' => 90,
+    ] );
+    $wp_customize->add_setting( 'royal_quote_headline', [
+        'default'           => 'READY TO<br>BREAK GROUND?',
+        'sanitize_callback' => 'wp_kses_post',
+    ] );
+    $wp_customize->add_control( 'royal_quote_headline', [
+        'label'   => __( 'Section Headline (HTML allowed)', 'royal-concrete' ),
+        'section' => 'royal_quote_section',
+        'type'    => 'textarea',
+    ] );
+    $wp_customize->add_setting( 'royal_quote_intro', [
+        'default'           => 'Reach out to Sahil today. We provide fast, free, no-nonsense estimates for all commercial and residential jobs.',
+        'sanitize_callback' => 'sanitize_text_field',
+    ] );
+    $wp_customize->add_control( 'royal_quote_intro', [
+        'label'   => __( 'Contact Intro Text', 'royal-concrete' ),
+        'section' => 'royal_quote_section',
+        'type'    => 'textarea',
+    ] );
+
+    /* ══ Footer ══ */
+    $wp_customize->add_section( 'royal_footer_section', [
+        'title'    => __( 'Footer', 'royal-concrete' ),
+        'priority' => 100,
+    ] );
+    $wp_customize->add_setting( 'royal_footer_tagline', [
+        'default'           => 'CUTTING & CORING INC.',
+        'sanitize_callback' => 'sanitize_text_field',
+    ] );
+    $wp_customize->add_control( 'royal_footer_tagline', [
+        'label'   => __( 'Footer Tagline', 'royal-concrete' ),
+        'section' => 'royal_footer_section',
+        'type'    => 'text',
     ] );
 }
 add_action( 'customize_register', 'royal_concrete_customize_register' );
 
 /* ─────────────────────────────────────────────
-   10. HELPER — get theme mod with fallback
+   9. HELPER — get theme mod with fallback
 ───────────────────────────────────────────── */
 function rc_mod( $key, $default = '' ) {
     return get_theme_mod( $key, $default );
 }
 
 /* ─────────────────────────────────────────────
-   11. INCLUDES
+   10. INCLUDES
 ───────────────────────────────────────────── */
 require get_template_directory() . '/inc/form-handler.php';
