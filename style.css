@@ -1,0 +1,17 @@
+/*
+Theme Name: Royal Concrete
+Theme URI: https://royalconcretecutting.com
+Author: Royal Concrete Cutting & Coring Inc.
+Author URI: https://royalconcretecutting.com
+Description: A bold, industrial WordPress theme for Royal Concrete Cutting & Coring Inc. Features a dark colour scheme with gold (#FFB800) accents, Anton display typography, animated hazard stripes, GSAP scroll animations, and a fully responsive layout built with Tailwind CSS.
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 6.5
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: royal-concrete
+Tags: dark, full-width-template, custom-colors, custom-menu, featured-images, threaded-comments, translation-ready
+*/
+
+/* Theme colours and root variables are handled via Tailwind config injected in functions.php */
