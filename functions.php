@@ -61,13 +61,13 @@ function royal_concrete_scripts() {
         null
     );
 
-    wp_enqueue_style( 'royal-concrete-style', get_stylesheet_uri(), [], '1.0.0' );
+    wp_enqueue_style( 'royal-concrete-style', get_stylesheet_uri(), [], filemtime( get_template_directory() . '/style.css' ) );
 
     wp_enqueue_style(
         'royal-concrete-main',
         get_template_directory_uri() . '/assets/css/main.css',
         [ 'royal-concrete-style' ],
-        '1.0.0'
+        filemtime( get_template_directory() . '/assets/css/main.css' )
     );
 
     // Tailwind CDN (development convenience — for production compile locally)
@@ -88,7 +88,7 @@ function royal_concrete_scripts() {
         'royal-concrete-main',
         get_template_directory_uri() . '/assets/js/main.js',
         [ 'gsap', 'gsap-scroll-trigger' ],
-        '1.0.0',
+        filemtime( get_template_directory() . '/assets/js/main.js' ),
         true
     );
 
