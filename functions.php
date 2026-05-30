@@ -498,6 +498,35 @@ function royal_concrete_customize_register( $wp_customize ) {
         ] ) );
     }
 
+    /* ══ Service Area ══ */
+    $wp_customize->add_section( 'royal_service_area_section', [
+        'title'    => __( 'Service Area', 'royal-concrete' ),
+        'priority' => 75,
+    ] );
+    $wp_customize->add_setting( 'royal_service_area_intro', [
+        'default'           => 'Serving Toronto and the Greater Toronto Area with fast turnaround, competitive pricing, and industrial-grade concrete cutting.',
+        'sanitize_callback' => 'sanitize_text_field',
+    ] );
+    $wp_customize->add_control( 'royal_service_area_intro', [
+        'label'   => __( 'Intro Text', 'royal-concrete' ),
+        'section' => 'royal_service_area_section',
+        'type'    => 'textarea',
+    ] );
+    $area_defaults = [
+        1  => 'TORONTO',       2  => 'MISSISSAUGA',   3  => 'BRAMPTON',
+        4  => 'SCARBOROUGH',   5  => 'NORTH YORK',    6  => 'ETOBICOKE',
+        7  => 'OAKVILLE',      8  => 'RICHMOND HILL', 9  => 'MARKHAM',
+        10 => 'VAUGHAN',
+    ];
+    foreach ( $area_defaults as $i => $default ) {
+        $wp_customize->add_setting( "royal_area_{$i}", [ 'default' => $default, 'sanitize_callback' => 'sanitize_text_field' ] );
+        $wp_customize->add_control( "royal_area_{$i}", [
+            'label'   => sprintf( __( 'Area %d', 'royal-concrete' ), $i ),
+            'section' => 'royal_service_area_section',
+            'type'    => 'text',
+        ] );
+    }
+
     /* ══ Egress Section ══ */
     $wp_customize->add_section( 'royal_egress_section', [
         'title'    => __( 'Egress Section', 'royal-concrete' ),
@@ -556,6 +585,29 @@ function royal_concrete_customize_register( $wp_customize ) {
         'section' => 'royal_quote_section',
         'type'    => 'textarea',
     ] );
+
+    /* ══ Testimonials ══ */
+    $wp_customize->add_section( 'royal_testimonials_section', [
+        'title'    => __( 'Testimonials', 'royal-concrete' ),
+        'priority' => 92,
+    ] );
+    $testimonial_defaults = [
+        1 => [ 'Sahil and his team did an incredible job cutting our egress window. Super clean work, on time, and exactly what we wanted. Highly recommend!', 'MIKE T.',   'EGRESS WINDOW — TORONTO',          '5' ],
+        2 => [ 'We needed a legal basement entrance cut and Royal Concrete delivered. Professional crew, permit-ready work, and a fair price. Will call again.', 'SARAH K.',  'LEGAL BASEMENT — MISSISSAUGA',     '5' ],
+        3 => [ 'Fast response, competitive quote, and the wall cutting was flawless. These guys know their stuff and take pride in the work.',                   'DAVID R.',  'WALL CUTTING — BRAMPTON',          '5' ],
+    ];
+    $t_fields = [ 'quote' => [ 'Review Text',    'textarea' ], 'name' => [ 'Customer Name', 'text' ], 'job' => [ 'Job & Location', 'text' ], 'stars' => [ 'Stars (1–5)', 'text' ] ];
+    foreach ( $testimonial_defaults as $i => $t ) {
+        $vals = array_combine( array_keys( $t_fields ), $t );
+        foreach ( $t_fields as $key => $field ) {
+            $wp_customize->add_setting( "royal_testimonial{$i}_{$key}", [ 'default' => $vals[ $key ], 'sanitize_callback' => 'sanitize_text_field' ] );
+            $wp_customize->add_control( "royal_testimonial{$i}_{$key}", [
+                'label'   => sprintf( __( 'Testimonial %d — %s', 'royal-concrete' ), $i, $field[0] ),
+                'section' => 'royal_testimonials_section',
+                'type'    => $field[1],
+            ] );
+        }
+    }
 
     /* ══ Footer ══ */
     $wp_customize->add_section( 'royal_footer_section', [

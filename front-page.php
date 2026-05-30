@@ -78,8 +78,42 @@ $egress_benefits = [
 $quote_headline = rc_mod( 'royal_quote_headline', 'READY TO<br>BREAK GROUND?' );
 $quote_intro    = rc_mod( 'royal_quote_intro',    'Reach out to Sahil today. We provide fast, free, no-nonsense estimates for all commercial and residential jobs.' );
 
-/* ─── Accent color (for inline styles) ─── */
-$accent = sanitize_hex_color( get_theme_mod( 'royal_accent_color', '#FFB800' ) ) ?: '#FFB800';
+/* ─── Service Area ─── */
+$service_area_intro = rc_mod( 'royal_service_area_intro', 'Serving Toronto and the Greater Toronto Area with fast turnaround, competitive pricing, and industrial-grade concrete cutting.' );
+$service_areas = [
+    rc_mod( 'royal_area_1',  'TORONTO'       ),
+    rc_mod( 'royal_area_2',  'MISSISSAUGA'   ),
+    rc_mod( 'royal_area_3',  'BRAMPTON'      ),
+    rc_mod( 'royal_area_4',  'SCARBOROUGH'   ),
+    rc_mod( 'royal_area_5',  'NORTH YORK'    ),
+    rc_mod( 'royal_area_6',  'ETOBICOKE'     ),
+    rc_mod( 'royal_area_7',  'OAKVILLE'      ),
+    rc_mod( 'royal_area_8',  'RICHMOND HILL' ),
+    rc_mod( 'royal_area_9',  'MARKHAM'       ),
+    rc_mod( 'royal_area_10', 'VAUGHAN'       ),
+];
+
+/* ─── Testimonials ─── */
+$testimonials = [
+    [
+        'quote' => rc_mod( 'royal_testimonial1_quote', 'Sahil and his team did an incredible job cutting our egress window. Super clean work, on time, and exactly what we wanted. Highly recommend!' ),
+        'name'  => rc_mod( 'royal_testimonial1_name',  'MIKE T.' ),
+        'job'   => rc_mod( 'royal_testimonial1_job',   'EGRESS WINDOW — TORONTO' ),
+        'stars' => rc_mod( 'royal_testimonial1_stars', '5' ),
+    ],
+    [
+        'quote' => rc_mod( 'royal_testimonial2_quote', 'We needed a legal basement entrance cut and Royal Concrete delivered. Professional crew, permit-ready work, and a fair price. Will call again.' ),
+        'name'  => rc_mod( 'royal_testimonial2_name',  'SARAH K.' ),
+        'job'   => rc_mod( 'royal_testimonial2_job',   'LEGAL BASEMENT — MISSISSAUGA' ),
+        'stars' => rc_mod( 'royal_testimonial2_stars', '5' ),
+    ],
+    [
+        'quote' => rc_mod( 'royal_testimonial3_quote', 'Fast response, competitive quote, and the wall cutting was flawless. These guys know their stuff and take pride in the work.' ),
+        'name'  => rc_mod( 'royal_testimonial3_name',  'DAVID R.' ),
+        'job'   => rc_mod( 'royal_testimonial3_job',   'WALL CUTTING — BRAMPTON' ),
+        'stars' => rc_mod( 'royal_testimonial3_stars', '5' ),
+    ],
+];
 ?>
 
 <!-- ══════════════════════════════
@@ -207,33 +241,41 @@ $accent = sanitize_hex_color( get_theme_mod( 'royal_accent_color', '#FFB800' ) )
 <!-- ══════════════════════════════
      SERVICES
 ══════════════════════════════ -->
-<section class="py-24 md:py-32" id="services" style="background-color:<?php echo esc_attr( $accent ); ?>;">
+<section class="py-24 md:py-32 bg-[#0d0e0f]" id="services">
   <div class="max-w-[1280px] mx-auto px-4 md:px-16 mb-10 md:mb-16">
     <div class="flex items-center gap-2 mb-4">
-      <div class="w-8 h-[2px] bg-black"></div>
-      <span class="font-label-md text-label-md uppercase tracking-widest text-[#0d0e0f]">WHAT WE DO</span>
+      <div class="w-8 h-[2px] bg-primary-container"></div>
+      <span class="font-label-md text-label-md uppercase tracking-widest text-primary-container">WHAT WE DO</span>
     </div>
-    <h2 class="font-headline-lg text-headline-lg uppercase text-black">OUR SERVICES</h2>
+    <h2 class="font-headline-lg text-headline-lg uppercase text-on-surface">OUR SERVICES</h2>
   </div>
 
   <div class="max-w-[1280px] mx-auto px-4 md:px-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <?php foreach ( $services as $svc ) :
+      // On dark section bg: "dark" (featured) cards use gold, regular cards use dark-gray
       $dark    = $svc[3];
       $img_url = $svc[4];
-      $nBg     = $dark ? 'border-t-primary-container' : 'border-t-black';
-      $titCl   = $dark ? 'text-primary-container' : 'text-black';
-      $txtCl   = $dark ? 'text-on-surface-variant' : 'text-black/80';
 
-      if ( $img_url ) {
-        $numCl   = $dark ? 'text-primary-container/80' : 'text-white/80';
-        $card_bg = $dark
-          ? 'bg-black border-2 border-black overflow-hidden flex flex-col group'
-          : 'bg-white/40 border-2 border-black overflow-hidden flex flex-col group hover:bg-white/60 transition-colors';
+      if ( $dark ) {
+        // Featured card — gold background
+        $card_bg = $img_url
+          ? 'bg-primary-container overflow-hidden flex flex-col group'
+          : 'bg-primary-container p-8 relative';
+        $nBg   = 'border-t-black';
+        $numCl = 'text-black/40';
+        $titCl = 'text-black';
+        $txtCl = 'text-black/70';
+        $imgNumCl = 'text-black/70';
       } else {
-        $numCl   = $dark ? 'text-primary-container/60' : 'text-black/50';
-        $card_bg = $dark
-          ? 'bg-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] p-8 relative'
-          : 'bg-white/40 border-2 border-black group hover:bg-white/60 transition-colors p-8 relative';
+        // Regular card — dark gray
+        $card_bg = $img_url
+          ? 'bg-surface-container border border-surface-variant hover:border-primary-container transition-colors overflow-hidden flex flex-col group'
+          : 'bg-surface-container border border-surface-variant hover:border-primary-container transition-colors p-8 relative';
+        $nBg   = 'border-t-primary-container';
+        $numCl = 'text-primary-container/50';
+        $titCl = 'text-on-surface';
+        $txtCl = 'text-on-surface-variant';
+        $imgNumCl = 'text-white/80';
       }
     ?>
     <div class="<?php echo esc_attr( $card_bg ); ?>">
@@ -245,7 +287,7 @@ $accent = sanitize_hex_color( get_theme_mod( 'royal_accent_color', '#FFB800' ) )
              alt="<?php echo esc_attr( $svc[1] ); ?>"
              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
         <div class="absolute inset-0 bg-black/40"></div>
-        <span class="absolute top-4 right-4 font-label-md text-label-md <?php echo esc_attr( $numCl ); ?> text-4xl font-bold drop-shadow-lg">
+        <span class="absolute top-4 right-4 font-label-md text-label-md <?php echo esc_attr( $imgNumCl ); ?> text-4xl font-bold drop-shadow-lg">
           <?php echo esc_html( $svc[0] ); ?>
         </span>
       </div>
@@ -256,7 +298,7 @@ $accent = sanitize_hex_color( get_theme_mod( 'royal_accent_color', '#FFB800' ) )
       </div>
 
       <?php else : ?>
-      <!-- Original no-image layout -->
+      <!-- No-image layout -->
       <div class="absolute top-0 right-0 w-0 h-0 border-t-[30px] border-l-[30px] <?php echo esc_attr( $nBg ); ?> border-l-transparent"></div>
       <span class="font-label-md text-label-md <?php echo esc_attr( $numCl ); ?> text-4xl block mb-6 font-bold"><?php echo esc_html( $svc[0] ); ?></span>
       <h3 class="font-headline-md text-headline-md <?php echo esc_attr( $titCl ); ?> uppercase mb-4"><?php echo esc_html( $svc[1] ); ?></h3>
@@ -265,6 +307,47 @@ $accent = sanitize_hex_color( get_theme_mod( 'royal_accent_color', '#FFB800' ) )
 
     </div>
     <?php endforeach; ?>
+  </div>
+</section>
+
+<div class="w-full h-[1px] bg-surface-variant"></div>
+
+<!-- ══════════════════════════════
+     SERVICE AREA
+══════════════════════════════ -->
+<section id="service-area" class="py-24 md:py-32 bg-background">
+  <div class="max-w-[1280px] mx-auto px-4 md:px-16 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+    <!-- Left: heading + text -->
+    <div>
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-[2px] bg-primary-container"></div>
+        <span class="font-label-md text-label-md text-primary-container uppercase tracking-widest">WHERE WE WORK</span>
+      </div>
+      <h2 class="font-headline-lg text-headline-lg uppercase mb-8 leading-tight">TORONTO<br>&amp; THE GTA</h2>
+      <p class="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-md">
+        <?php echo esc_html( $service_area_intro ); ?>
+      </p>
+      <a href="#quote"
+         class="inline-block bg-primary-container text-black font-headline-md text-headline-md px-8 py-3 uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all border-2 border-transparent">
+        GET A FREE QUOTE
+      </a>
+    </div>
+
+    <!-- Right: area grid -->
+    <div class="grid grid-cols-2 gap-3">
+      <?php foreach ( $service_areas as $area ) :
+        if ( ! trim( $area ) ) continue;
+      ?>
+      <div class="flex items-center gap-3 border border-surface-variant px-4 py-3 hover:border-primary-container hover:bg-surface-container transition-all duration-200 group cursor-default">
+        <span class="material-symbols-outlined text-primary-container shrink-0" style="font-size:18px;">location_on</span>
+        <span class="font-label-md text-label-md text-on-surface uppercase group-hover:text-primary-container transition-colors">
+          <?php echo esc_html( $area ); ?>
+        </span>
+      </div>
+      <?php endforeach; ?>
+    </div>
+
   </div>
 </section>
 
@@ -402,6 +485,55 @@ if ( $projects->have_posts() ) :
   </div>
 </section>
 <?php endif; ?>
+
+<!-- ══════════════════════════════
+     TESTIMONIALS
+══════════════════════════════ -->
+<div class="w-full h-3 hazard-stripe"></div>
+<section id="testimonials" class="py-24 md:py-32 bg-surface-container-low">
+  <div class="max-w-[1280px] mx-auto px-4 md:px-16">
+
+    <div class="flex items-center gap-2 mb-4">
+      <div class="w-8 h-[2px] bg-primary-container"></div>
+      <span class="font-label-md text-label-md text-primary-container uppercase tracking-widest">REVIEWS</span>
+    </div>
+    <h2 class="font-headline-lg text-headline-lg uppercase mb-12 md:mb-16">WHAT CLIENTS SAY</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <?php foreach ( $testimonials as $t ) :
+        if ( ! trim( $t['quote'] ) ) continue;
+        $stars = max( 1, min( 5, (int) $t['stars'] ) );
+      ?>
+      <div class="bg-surface-container border border-surface-variant p-8 flex flex-col relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+
+        <!-- Stars -->
+        <div class="flex gap-1 mb-6 ml-4">
+          <?php for ( $s = 1; $s <= 5; $s++ ) : ?>
+          <span class="text-xl <?php echo $s <= $stars ? 'text-primary-container' : 'text-surface-variant'; ?>">★</span>
+          <?php endfor; ?>
+        </div>
+
+        <!-- Quote -->
+        <p class="font-body-lg text-body-lg text-on-surface-variant mb-8 ml-4 flex-1 italic">
+          "<?php echo esc_html( $t['quote'] ); ?>"
+        </p>
+
+        <!-- Person -->
+        <div class="border-t border-surface-variant pt-6 ml-4">
+          <span class="block font-label-md text-label-md text-primary-container uppercase font-bold tracking-widest">
+            <?php echo esc_html( $t['name'] ); ?>
+          </span>
+          <span class="block font-label-md text-label-md text-on-surface-variant uppercase text-xs mt-1">
+            <?php echo esc_html( $t['job'] ); ?>
+          </span>
+        </div>
+      </div>
+      <?php endforeach; ?>
+    </div>
+
+  </div>
+</section>
 
 <!-- ══════════════════════════════
      QUOTE / CONTACT
