@@ -97,22 +97,26 @@ html { scroll-behavior: smooth; }
   bottom: 0;
   left: 0;
   right: 0;
-  background: #FFB800;
-  padding: 14px 16px;
+  background: rgba(18, 20, 20, 0.97);
+  border-top: 2px solid #FFB800;
+  padding: 10px 16px;
   z-index: 50;
   text-align: center;
-  box-shadow: 0 -4px 12px rgba(0,0,0,.5);
+  box-shadow: 0 -4px 20px rgba(0,0,0,.6);
 }
 .mobile-sticky-cta a {
   font-family: 'Anton', sans-serif;
   font-size: 18px;
-  color: #000;
+  color: #FFB800;
   text-decoration: none;
   text-transform: uppercase;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  background: transparent;
+  border: 2px solid #FFB800;
+  padding: 10px 16px;
 }
 
 /* ── CUSTOM LOGO SIZING ── */
@@ -199,6 +203,35 @@ html { scroll-behavior: smooth; }
   #quote h2 { font-size: 36px !important; }
   #quote .bg-\[\#1A1A1A\] { padding: 20px 16px !important; }
   #quote form.ml-4 { margin-left: 0 !important; }
+
+  /* SERVICE AREA */
+  #service-area { padding-top: 48px !important; padding-bottom: 48px !important; }
+  #service-area h2 { font-size: 38px !important; line-height: 1.05 !important; }
+  #service-area > div > div { padding-left: 0 !important; padding-right: 0 !important; }
+  #service-area .grid.grid-cols-2 { gap: 8px !important; }
+  #service-area .grid.grid-cols-2 > div { padding: 10px 12px !important; }
+  #service-area a.inline-block {
+    width: 100% !important;
+    text-align: center !important;
+    font-size: 18px !important;
+    padding: 12px 20px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* TESTIMONIALS */
+  #testimonials { padding-top: 48px !important; padding-bottom: 48px !important; }
+  #testimonials h2 { font-size: 38px !important; }
+  #testimonials .grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+  #testimonials .grid > div { padding: 20px !important; }
+
+  /* OUR WORK (homepage) */
+  #our-work { padding-top: 48px !important; padding-bottom: 48px !important; }
+  #our-work h2 { font-size: 38px !important; }
+  #our-work .grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+  #our-work .flex.items-end { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+
+  /* Services — image card content area */
+  #services > div:last-child > div > div.p-8 { padding: 16px !important; }
 
   /* FOOTER */
   footer { padding: 28px 16px !important; }
