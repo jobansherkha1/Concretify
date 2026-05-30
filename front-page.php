@@ -55,6 +55,7 @@ foreach ( $service_defaults as $i => $svc ) {
         rc_mod( "royal_service{$n}_title", $svc[0] ),
         rc_mod( "royal_service{$n}_desc",  $svc[1] ),
         $svc[2],
+        rc_mod( "royal_service{$n}_image", '' ),
     ];
 }
 
@@ -217,18 +218,51 @@ $accent = sanitize_hex_color( get_theme_mod( 'royal_accent_color', '#FFB800' ) )
 
   <div class="max-w-[1280px] mx-auto px-4 md:px-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <?php foreach ( $services as $svc ) :
-      $dark  = $svc[3];
-      $bg    = $dark ? 'bg-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]' : 'bg-white/40 border-2 border-black group hover:bg-white/60 transition-colors';
-      $nBg   = $dark ? 'border-t-primary-container' : 'border-t-black';
-      $numCl = $dark ? 'text-primary-container/60' : 'text-black/50';
-      $titCl = $dark ? 'text-primary-container' : 'text-black';
-      $txtCl = $dark ? 'text-on-surface-variant' : 'text-black/80';
+      $dark    = $svc[3];
+      $img_url = $svc[4];
+      $nBg     = $dark ? 'border-t-primary-container' : 'border-t-black';
+      $titCl   = $dark ? 'text-primary-container' : 'text-black';
+      $txtCl   = $dark ? 'text-on-surface-variant' : 'text-black/80';
+
+      if ( $img_url ) {
+        $numCl   = $dark ? 'text-primary-container/80' : 'text-white/80';
+        $card_bg = $dark
+          ? 'bg-black border-2 border-black overflow-hidden flex flex-col group'
+          : 'bg-white/40 border-2 border-black overflow-hidden flex flex-col group hover:bg-white/60 transition-colors';
+      } else {
+        $numCl   = $dark ? 'text-primary-container/60' : 'text-black/50';
+        $card_bg = $dark
+          ? 'bg-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] p-8 relative'
+          : 'bg-white/40 border-2 border-black group hover:bg-white/60 transition-colors p-8 relative';
+      }
     ?>
-    <div class="<?php echo esc_attr( $bg ); ?> p-8 relative">
+    <div class="<?php echo esc_attr( $card_bg ); ?>">
+
+      <?php if ( $img_url ) : ?>
+      <!-- Image header -->
+      <div class="relative aspect-video overflow-hidden shrink-0">
+        <img src="<?php echo esc_url( $img_url ); ?>"
+             alt="<?php echo esc_attr( $svc[1] ); ?>"
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <span class="absolute top-4 right-4 font-label-md text-label-md <?php echo esc_attr( $numCl ); ?> text-4xl font-bold drop-shadow-lg">
+          <?php echo esc_html( $svc[0] ); ?>
+        </span>
+      </div>
+      <!-- Content below image -->
+      <div class="p-8 flex-1">
+        <h3 class="font-headline-md text-headline-md <?php echo esc_attr( $titCl ); ?> uppercase mb-4"><?php echo esc_html( $svc[1] ); ?></h3>
+        <p class="font-body-md text-body-md <?php echo esc_attr( $txtCl ); ?>"><?php echo esc_html( $svc[2] ); ?></p>
+      </div>
+
+      <?php else : ?>
+      <!-- Original no-image layout -->
       <div class="absolute top-0 right-0 w-0 h-0 border-t-[30px] border-l-[30px] <?php echo esc_attr( $nBg ); ?> border-l-transparent"></div>
       <span class="font-label-md text-label-md <?php echo esc_attr( $numCl ); ?> text-4xl block mb-6 font-bold"><?php echo esc_html( $svc[0] ); ?></span>
       <h3 class="font-headline-md text-headline-md <?php echo esc_attr( $titCl ); ?> uppercase mb-4"><?php echo esc_html( $svc[1] ); ?></h3>
       <p class="font-body-md text-body-md <?php echo esc_attr( $txtCl ); ?>"><?php echo esc_html( $svc[2] ); ?></p>
+      <?php endif; ?>
+
     </div>
     <?php endforeach; ?>
   </div>
@@ -286,6 +320,88 @@ $accent = sanitize_hex_color( get_theme_mod( 'royal_accent_color', '#FFB800' ) )
     </a>
   </div>
 </section>
+
+<!-- ══════════════════════════════
+     OUR WORK
+══════════════════════════════ -->
+<?php
+$projects = new WP_Query( [
+    'post_type'      => 'rc_project',
+    'posts_per_page' => 6,
+    'post_status'    => 'publish',
+] );
+if ( $projects->have_posts() ) :
+?>
+<div class="w-full h-3 hazard-stripe"></div>
+<section id="our-work" class="py-24 md:py-32 bg-surface-container-low">
+  <div class="max-w-[1280px] mx-auto px-4 md:px-16">
+
+    <div class="flex items-end justify-between mb-10 md:mb-16 flex-wrap gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-[2px] bg-primary-container"></div>
+          <span class="font-label-md text-label-md text-primary-container uppercase tracking-widest">PORTFOLIO</span>
+        </div>
+        <h2 class="font-headline-lg text-headline-lg uppercase text-on-surface">OUR WORK</h2>
+      </div>
+      <a href="<?php echo esc_url( get_post_type_archive_link( 'rc_project' ) ); ?>"
+         class="inline-flex items-center gap-2 font-label-md text-label-md text-primary-container uppercase tracking-widest hover:underline transition-all">
+        VIEW ALL PROJECTS
+        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <?php while ( $projects->have_posts() ) : $projects->the_post();
+        $video_url = get_post_meta( get_the_ID(), '_rc_project_video_url', true );
+        $category  = get_post_meta( get_the_ID(), '_rc_project_category', true ) ?: 'residential';
+        $cat_label = ucfirst( $category );
+      ?>
+      <div class="group bg-surface-container border border-surface-variant overflow-hidden flex flex-col hover:border-primary-container transition-colors duration-300">
+
+        <!-- Media -->
+        <div class="relative aspect-video overflow-hidden shrink-0 bg-surface-container-high">
+          <?php if ( $video_url ) : ?>
+          <video class="w-full h-full object-cover" autoplay muted loop playsinline>
+            <source src="<?php echo esc_url( $video_url ); ?>" type="video/mp4">
+          </video>
+          <?php elseif ( has_post_thumbnail() ) : ?>
+          <?php the_post_thumbnail( 'royal-service', [
+            'class' => 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105',
+            'alt'   => esc_attr( get_the_title() ),
+          ] ); ?>
+          <?php else : ?>
+          <div class="w-full h-full flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-surface-variant" style="font-size:64px;">construction</span>
+          </div>
+          <?php endif; ?>
+          <!-- Category tag -->
+          <div class="absolute top-3 left-3">
+            <span class="bg-primary-container text-black font-label-md text-label-md text-xs px-3 py-1 uppercase font-bold">
+              <?php echo esc_html( $cat_label ); ?>
+            </span>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 flex-1 flex flex-col justify-between">
+          <h3 class="font-headline-md text-[20px] uppercase text-on-surface mb-3 group-hover:text-primary-container transition-colors">
+            <?php the_title(); ?>
+          </h3>
+          <?php if ( has_excerpt() ) : ?>
+          <p class="font-body-md text-body-md text-on-surface-variant text-sm line-clamp-2">
+            <?php the_excerpt(); ?>
+          </p>
+          <?php endif; ?>
+        </div>
+
+      </div>
+      <?php endwhile; wp_reset_postdata(); ?>
+    </div>
+
+  </div>
+</section>
+<?php endif; ?>
 
 <!-- ══════════════════════════════
      QUOTE / CONTACT

@@ -220,7 +220,84 @@ function royal_concrete_widgets_init() {
 add_action( 'widgets_init', 'royal_concrete_widgets_init' );
 
 /* ─────────────────────────────────────────────
-   7. CUSTOM WALKERS — flat nav
+   7. PROJECTS CUSTOM POST TYPE
+───────────────────────────────────────────── */
+function royal_concrete_register_project_cpt() {
+    register_post_type( 'rc_project', [
+        'labels' => [
+            'name'          => __( 'Projects',        'royal-concrete' ),
+            'singular_name' => __( 'Project',         'royal-concrete' ),
+            'add_new_item'  => __( 'Add New Project', 'royal-concrete' ),
+            'edit_item'     => __( 'Edit Project',    'royal-concrete' ),
+            'view_item'     => __( 'View Project',    'royal-concrete' ),
+            'all_items'     => __( 'All Projects',    'royal-concrete' ),
+        ],
+        'public'       => true,
+        'has_archive'  => true,
+        'show_in_rest' => true,
+        'supports'     => [ 'title', 'thumbnail', 'excerpt' ],
+        'menu_icon'    => 'dashicons-portfolio',
+        'rewrite'      => [ 'slug' => 'our-work' ],
+    ] );
+}
+add_action( 'init', 'royal_concrete_register_project_cpt' );
+
+function royal_concrete_project_meta_boxes() {
+    add_meta_box(
+        'rc_project_details',
+        __( 'Project Details', 'royal-concrete' ),
+        'royal_concrete_project_meta_callback',
+        'rc_project',
+        'normal',
+        'high'
+    );
+}
+add_action( 'add_meta_boxes', 'royal_concrete_project_meta_boxes' );
+
+function royal_concrete_project_meta_callback( $post ) {
+    wp_nonce_field( 'rc_project_meta', 'rc_project_meta_nonce' );
+    $category  = get_post_meta( $post->ID, '_rc_project_category',  true ) ?: 'residential';
+    $video_url = get_post_meta( $post->ID, '_rc_project_video_url', true );
+    ?>
+    <table class="form-table">
+      <tr>
+        <th><label for="rc_project_category"><?php esc_html_e( 'Category', 'royal-concrete' ); ?></label></th>
+        <td>
+          <select name="rc_project_category" id="rc_project_category">
+            <option value="residential" <?php selected( $category, 'residential' ); ?>><?php esc_html_e( 'Residential', 'royal-concrete' ); ?></option>
+            <option value="commercial"  <?php selected( $category, 'commercial'  ); ?>><?php esc_html_e( 'Commercial',  'royal-concrete' ); ?></option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th><label for="rc_project_video_url"><?php esc_html_e( 'Video URL (.mp4)', 'royal-concrete' ); ?></label></th>
+        <td>
+          <input type="url" name="rc_project_video_url" id="rc_project_video_url"
+                 value="<?php echo esc_attr( $video_url ); ?>" class="large-text">
+          <p class="description"><?php esc_html_e( 'Leave blank to use the Featured Image instead.', 'royal-concrete' ); ?></p>
+        </td>
+      </tr>
+    </table>
+    <?php
+}
+
+function royal_concrete_save_project_meta( $post_id ) {
+    if ( ! isset( $_POST['rc_project_meta_nonce'] ) ) return;
+    if ( ! wp_verify_nonce( $_POST['rc_project_meta_nonce'], 'rc_project_meta' ) ) return;
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+    if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+
+    if ( isset( $_POST['rc_project_category'] ) ) {
+        update_post_meta( $post_id, '_rc_project_category', sanitize_text_field( $_POST['rc_project_category'] ) );
+    }
+    if ( isset( $_POST['rc_project_video_url'] ) ) {
+        update_post_meta( $post_id, '_rc_project_video_url', esc_url_raw( $_POST['rc_project_video_url'] ) );
+    }
+}
+add_action( 'save_post_rc_project', 'royal_concrete_save_project_meta' );
+
+/* ─────────────────────────────────────────────
+   8. CUSTOM WALKERS — flat nav
 ───────────────────────────────────────────── */
 class Royal_Concrete_Walker extends Walker_Nav_Menu {
     function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
@@ -414,6 +491,11 @@ function royal_concrete_customize_register( $wp_customize ) {
             'section' => 'royal_services_section',
             'type'    => 'textarea',
         ] );
+        $wp_customize->add_setting( "royal_service{$i}_image", [ 'default' => '', 'sanitize_callback' => 'esc_url_raw' ] );
+        $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, "royal_service{$i}_image", [
+            'label'   => sprintf( __( 'Service %d — Image (optional)', 'royal-concrete' ), $i ),
+            'section' => 'royal_services_section',
+        ] ) );
     }
 
     /* ══ Egress Section ══ */
